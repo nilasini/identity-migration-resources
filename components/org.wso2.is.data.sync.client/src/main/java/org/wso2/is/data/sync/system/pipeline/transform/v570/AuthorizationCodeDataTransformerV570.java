@@ -17,6 +17,8 @@
 package org.wso2.is.data.sync.system.pipeline.transform.v570;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.core.util.CryptoException;
@@ -49,11 +51,13 @@ import static org.wso2.is.data.sync.system.util.OAuth2Util.updateJournalEntryFor
 public class AuthorizationCodeDataTransformerV570 implements DataTransformer {
 
     private static String hashingAlgorithm = OAuthServerConfiguration.getInstance().getHashAlgorithm();
+    private Log log = LogFactory.getLog(AuthorizationCodeDataTransformerV570.class);
 
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
 
+        log.info("LOG PATCH: Transforming through AuthorizationCodeDataTransformerV570.");
         try {
             boolean encryptionWithTransformationEnabled = OAuth2Util.isEncryptionWithTransformationEnabled();
             boolean tokenEncryptionEnabled = OAuth2Util.isTokenEncryptionEnabled();

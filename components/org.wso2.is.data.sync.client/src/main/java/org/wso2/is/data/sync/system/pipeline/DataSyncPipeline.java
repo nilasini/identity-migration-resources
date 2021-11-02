@@ -16,6 +16,7 @@
 
 package org.wso2.is.data.sync.system.pipeline;
 
+import com.hazelcast.util.CollectionUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.is.data.sync.system.config.Configuration;
@@ -29,6 +30,7 @@ import org.wso2.is.data.sync.system.pipeline.transform.DataTransformerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -108,7 +110,11 @@ public class DataSyncPipeline {
                     pipelineConfiguration);
 
             List<JournalEntry> journalEntryBatch = batchProcessor.pollJournal(context);
+            log.info("LOG PATCH: Transform journal entry.");
             List<JournalEntry> transformedJournalEntryBatch = dataTransformer.transform(journalEntryBatch, context);
+            if (CollectionUtil.isEmpty(transformedJournalEntryBatch)) {
+                log.info("LOG PATCH: Transformed journal entry batch is empty.");
+            }
             List<TransactionResult> transactionResults = persistor.persist(transformedJournalEntryBatch, context);
             boolean batchProcessingSuccess = resultHandler.processResults(transactionResults, context);
 

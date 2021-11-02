@@ -15,8 +15,11 @@
  */
 package org.wso2.is.data.sync.system.pipeline.transform.v5110;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.oauth2.IdentityOAuth2Exception;
 import org.wso2.is.data.sync.system.exception.SyncClientException;
+import org.wso2.is.data.sync.system.pipeline.DataSyncPipeline;
 import org.wso2.is.data.sync.system.pipeline.JournalEntry;
 import org.wso2.is.data.sync.system.pipeline.PipelineContext;
 import org.wso2.is.data.sync.system.pipeline.transform.DataTransformer;
@@ -34,6 +37,7 @@ import static org.wso2.is.data.sync.system.util.OAuth2Util.updateJournalEntryFor
 public class AuthorizationCodeDataTransformerV5110 implements DataTransformer {
 
     private String oldEncryptionAlgorithm;
+    private static final Log log = LogFactory.getLog(AuthorizationCodeDataTransformerV5110.class);
 
     public AuthorizationCodeDataTransformerV5110(String oldEncryptionAlgorithmConfigured) {
 
@@ -43,7 +47,7 @@ public class AuthorizationCodeDataTransformerV5110 implements DataTransformer {
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
-
+        log.info("LOG PATCH: Transforming through AuthorizationCodeDataTransformerV5110.");
         try {
             boolean tokenEncryptionEnabled = OAuth2Util.isTokenEncryptionEnabled();
             boolean isColumnNameInsLowerCase = isIdentifierNamesMaintainedInLowerCase(context.getTargetConnection());

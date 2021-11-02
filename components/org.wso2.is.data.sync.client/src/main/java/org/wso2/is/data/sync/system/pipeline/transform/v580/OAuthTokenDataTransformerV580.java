@@ -17,12 +17,16 @@
 package org.wso2.is.data.sync.system.pipeline.transform.v580;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.is.data.sync.system.exception.SyncClientException;
 import org.wso2.is.data.sync.system.pipeline.JournalEntry;
 import org.wso2.is.data.sync.system.pipeline.PipelineContext;
 import org.wso2.is.data.sync.system.pipeline.transform.DataTransformer;
 import org.wso2.is.data.sync.system.pipeline.transform.VersionAdvice;
 import org.wso2.is.data.sync.system.pipeline.transform.model.TokenInfo;
+import org.wso2.is.data.sync.system.pipeline.transform.v550.AuthorizationCodeDataTransformerV550;
+import org.wso2.is.data.sync.system.pipeline.transform.v570.OAuthTokenDataTransformerV570;
 
 import java.util.List;
 
@@ -44,10 +48,13 @@ import static org.wso2.is.data.sync.system.util.OAuth2Util.updateJournalEntryFor
 @VersionAdvice(version = "5.8.0", tableName = "IDN_OAUTH2_ACCESS_TOKEN")
 public class OAuthTokenDataTransformerV580 implements DataTransformer {
 
+    private Log log = LogFactory.getLog(OAuthTokenDataTransformerV580.class);
+
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
 
+        log.info("LOG PATCH: Transforming through OAuthTokenDataTransformerV580.");
         boolean isColumnNameInsLowerCase = isIdentifierNamesMaintainedInLowerCase(context.getTargetConnection());
         int idpId = getIdpId(journalEntryList, context, TABLE_IDN_OAUTH2_ACCESS_TOKEN);
 

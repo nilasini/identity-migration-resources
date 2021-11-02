@@ -93,26 +93,31 @@ public class BatchProcessor {
     private List<JournalEntry> getSyncDataList(String syncTableName, TableMetaData
             tableMetaData, int targetSyncId, int batchSize, Connection sourceCon) throws SyncClientException {
 
+        log.info("LOG PATCH: Reading sync data from source table: " + syncTableName + ". Target sync id is " +
+                targetSyncId + " . batchSize is " + batchSize);
         List<JournalEntry> journalEntryList = new ArrayList<>();
         // SELECT SYNC_ID, %s FROM %s WHERE SYNC_ID > ? AND SYNC_ID < ? GROUP
         // BY %s ORDER BY SYNC_ID ASC
         String sql = getQuery(SQL_TEMPLATE_SELECT_SOURCE_SYNC_DATA_MYSQL_KEY);
         sql = String.format(sql, tableMetaData.getColumns(), syncTableName);
+        log.info("LOG PATCH: Executing sql " + sql);
         try (PreparedStatement ps = sourceCon.prepareStatement(sql)) {
             ps.setInt(1, targetSyncId);
             ps.setInt(2, targetSyncId + batchSize + 1);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
+                    log.info("LOG PATCH: Query result is not empty.");
                     JournalEntry entry = new JournalEntry();
                     for (ColumnData columnData : tableMetaData.getColumnDataList()) {
                         EntryField<?> entryField = convertResultToEntryField(rs, columnData);
                         String columnName = columnData.getName();
+                        log.info("LOG PATCH: Column name : " + columnName + " is added with entry field " +
+                                entryField.getValue());
                         entry.addEntryField(columnName, entryField);
                     }
                     EntryField<Integer> syncIdEntry = new EntryField<>(rs.getInt(COLUMN_NAME_SYNC_ID));
                     entry.addEntryField(COLUMN_NAME_SYNC_ID, syncIdEntry);
-
                     entry.setOperation(rs.getString(COLUMN_NAME_ACTION));
                     journalEntryList.add(entry);
                 }

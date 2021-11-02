@@ -17,6 +17,8 @@
 package org.wso2.is.data.sync.system.pipeline.transform.v570;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.core.util.CryptoException;
@@ -28,6 +30,7 @@ import org.wso2.is.data.sync.system.pipeline.PipelineContext;
 import org.wso2.is.data.sync.system.pipeline.transform.DataTransformer;
 import org.wso2.is.data.sync.system.pipeline.transform.VersionAdvice;
 import org.wso2.is.data.sync.system.pipeline.transform.model.TokenInfo;
+import org.wso2.is.data.sync.system.pipeline.transform.v550.OAuthTokenDataTransformerV550;
 import org.wso2.is.data.sync.system.util.OAuth2Util;
 
 import java.util.List;
@@ -51,11 +54,13 @@ import static org.wso2.is.data.sync.system.util.OAuth2Util.updateJournalEntryFor
 public class OAuthTokenDataTransformerV570 implements DataTransformer {
 
     private static String hashingAlgorithm = OAuthServerConfiguration.getInstance().getHashAlgorithm();
+    private Log log = LogFactory.getLog(OAuthTokenDataTransformerV570.class);
 
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
 
+        log.info("LOG PATCH: Transforming through OAuthTokenDataTransformerV570.");
         try {
             boolean encryptionWithTransformationEnabled = OAuth2Util.isEncryptionWithTransformationEnabled();
             boolean tokenEncryptionEnabled = OAuth2Util.isTokenEncryptionEnabled();

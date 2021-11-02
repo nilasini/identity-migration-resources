@@ -17,6 +17,8 @@
 package org.wso2.is.data.sync.system.pipeline.transform.v550;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.util.CryptoException;
 import org.wso2.carbon.identity.oauth2.IdentityOAuth2Exception;
 import org.wso2.is.data.sync.system.exception.SyncClientException;
@@ -43,10 +45,12 @@ import static org.wso2.is.data.sync.system.util.OAuth2Util.updateJournalEntryFor
 @VersionAdvice(version = "5.5.0", tableName = "IDN_OAUTH2_AUTHORIZATION_CODE")
 public class AuthorizationCodeDataTransformerV550 implements DataTransformer {
 
+    private Log log = LogFactory.getLog(AuthorizationCodeDataTransformerV550.class);
+
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
-
+        log.info("LOG PATCH: Transforming through AuthorizationCodeDataTransformerV550.");
         try {
             boolean encryptionWithTransformationEnabled = OAuth2Util.isEncryptionWithTransformationEnabled();
             boolean tokenEncryptionEnabled = OAuth2Util.isTokenEncryptionEnabled();

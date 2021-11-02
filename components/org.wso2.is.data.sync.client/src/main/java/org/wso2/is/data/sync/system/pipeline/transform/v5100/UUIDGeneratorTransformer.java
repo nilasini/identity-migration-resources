@@ -16,12 +16,15 @@
 
 package org.wso2.is.data.sync.system.pipeline.transform.v5100;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.is.data.sync.system.exception.SyncClientException;
 import org.wso2.is.data.sync.system.pipeline.EntryField;
 import org.wso2.is.data.sync.system.pipeline.JournalEntry;
 import org.wso2.is.data.sync.system.pipeline.PipelineContext;
 import org.wso2.is.data.sync.system.pipeline.transform.DataTransformer;
 import org.wso2.is.data.sync.system.pipeline.transform.VersionAdvice;
+import org.wso2.is.data.sync.system.pipeline.transform.v580.OAuthTokenDataTransformerV580;
 import org.wso2.is.data.sync.system.util.Constant;
 
 import java.util.List;
@@ -33,9 +36,13 @@ import java.util.UUID;
 @VersionAdvice(version = "5.10.0", tableName = "UM_USER")
 public class UUIDGeneratorTransformer implements DataTransformer {
 
+    private Log log = LogFactory.getLog(UUIDGeneratorTransformer.class);
+
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
+
+        log.info("LOG PATCH: Transforming through UUIDGeneratorTransformer.");
 
         for (JournalEntry entry : journalEntryList) {
             EntryField<String> entryField = new EntryField<>(UUID.randomUUID().toString());
