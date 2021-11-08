@@ -36,6 +36,9 @@ public class PassThroughDataTransformer implements DataTransformer {
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
 
+        log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                " ITERATION: " + context.getProperty("iteration") + " PassThroughDataTransformer is engaged.");
+
         if (log.isDebugEnabled()) {
             log.debug("PassThroughDataTransformer is engaged for table: " + context.getPipelineConfiguration()
                     .getTableName());

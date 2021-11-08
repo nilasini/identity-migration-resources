@@ -15,12 +15,15 @@
  */
 package org.wso2.is.data.sync.system.pipeline.transform.v5110;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.workflow.mgt.dto.WorkflowRequest;
 import org.wso2.is.data.sync.system.exception.SyncClientException;
 import org.wso2.is.data.sync.system.pipeline.JournalEntry;
 import org.wso2.is.data.sync.system.pipeline.PipelineContext;
 import org.wso2.is.data.sync.system.pipeline.transform.DataTransformer;
 import org.wso2.is.data.sync.system.pipeline.transform.VersionAdvice;
+import org.wso2.is.data.sync.system.pipeline.transform.v5100.UUIDGeneratorTransformer;
 import org.wso2.is.data.sync.system.util.EncryptionUtil;
 import org.wso2.is.data.sync.system.util.WorkFlowUtil;
 
@@ -38,6 +41,7 @@ import static org.wso2.is.data.sync.system.util.Constant.COLUMN_UUID;
 public class WorkflowRequestDataTransformerV5110 implements DataTransformer {
 
     private String oldEncryptionAlgorithm;
+    private Log log = LogFactory.getLog(WorkflowRequestDataTransformerV5110.class);
 
     public WorkflowRequestDataTransformerV5110(String oldEncryptionAlgorithmConfigured) {
 
@@ -47,6 +51,9 @@ public class WorkflowRequestDataTransformerV5110 implements DataTransformer {
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
+
+        log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                " ITERATION: " + context.getProperty("iteration") + " Transforming through WorkflowRequestDataTransformerV5110.");
 
         boolean isColumnNameInsLowerCase = isIdentifierNamesMaintainedInLowerCase(context.getTargetConnection());
         for (JournalEntry entry : journalEntryList) {

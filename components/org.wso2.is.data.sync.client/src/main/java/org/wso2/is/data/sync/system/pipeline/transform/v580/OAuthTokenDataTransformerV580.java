@@ -54,7 +54,9 @@ public class OAuthTokenDataTransformerV580 implements DataTransformer {
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
 
-        log.info("LOG PATCH: Transforming through OAuthTokenDataTransformerV580.");
+        log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                        " ITERATION: " + context.getProperty("iteration") + " Transforming through " +
+                        "OAuthTokenDataTransformerV580");
         boolean isColumnNameInsLowerCase = isIdentifierNamesMaintainedInLowerCase(context.getTargetConnection());
         int idpId = getIdpId(journalEntryList, context, TABLE_IDN_OAUTH2_ACCESS_TOKEN);
 

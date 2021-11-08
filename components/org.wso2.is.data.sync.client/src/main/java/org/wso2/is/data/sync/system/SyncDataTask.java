@@ -49,7 +49,6 @@ public class SyncDataTask implements Runnable {
     public void run() {
 
         try {
-            log.info("Sync task started for table: " + table);
             while (active) {
                 dataSyncPipeline.process();
                 try {

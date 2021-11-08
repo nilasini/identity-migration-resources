@@ -47,7 +47,9 @@ public class AuthorizationCodeDataTransformerV5110 implements DataTransformer {
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
-        log.info("LOG PATCH: Transforming through AuthorizationCodeDataTransformerV5110.");
+        log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                " ITERATION: " + context.getProperty("iteration") + " Transforming through " +
+                "AuthorizationCodeDataTransformerV5110.");
         try {
             boolean tokenEncryptionEnabled = OAuth2Util.isTokenEncryptionEnabled();
             boolean isColumnNameInsLowerCase = isIdentifierNamesMaintainedInLowerCase(context.getTargetConnection());

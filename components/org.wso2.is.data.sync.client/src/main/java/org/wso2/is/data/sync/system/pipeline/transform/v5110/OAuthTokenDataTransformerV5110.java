@@ -49,7 +49,10 @@ public class OAuthTokenDataTransformerV5110 implements DataTransformer {
     @Override
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
-        log.info("LOG PATCH: Transform journal entry with OAuthTokenDataTransformerV5110.");
+
+        log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                " ITERATION: " + context.getProperty("iteration") + " Transform journal entry with " +
+                "OAuthTokenDataTransformerV5110.");
         try {
             boolean tokenEncryptionEnabled = OAuth2Util.isTokenEncryptionEnabled();
             boolean isColumnNameInsLowerCase = isIdentifierNamesMaintainedInLowerCase(context.getTargetConnection());
@@ -57,15 +60,19 @@ public class OAuthTokenDataTransformerV5110 implements DataTransformer {
                 String accessToken = getObjectValueFromEntry(entry, COLUMN_ACCESS_TOKEN,
                         isColumnNameInsLowerCase);
                 if (accessToken != null) {
-                    log.info("LOG PATCH: retrieving access token.");
+                    log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                            " ITERATION: " + context.getProperty("iteration") + " retrieving access token.");
                 }
                 String refreshToken = getObjectValueFromEntry(entry, COLUMN_REFRESH_TOKEN,
                         isColumnNameInsLowerCase);
                 if (refreshToken != null) {
-                    log.info("LOG PATCH: retrieving refresh token.");
+                    log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                            " ITERATION: " + context.getProperty("iteration") + " retrieving refresh token.");
                 }
                 TokenInfo tokenInfo = new TokenInfo(accessToken, refreshToken);
-                log.info("LOG PATCH: token encryption is enabled : " + tokenEncryptionEnabled);
+                log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                        " ITERATION: " + context.getProperty("iteration") + " token encryption is enabled : " +
+                        tokenEncryptionEnabled);
                 if (tokenEncryptionEnabled) {
                     EncryptionUtil.setCurrentEncryptionAlgorithm(oldEncryptionAlgorithm);
                     OAuth2Util.transformTokensFromOldToNewEncryption(tokenInfo);

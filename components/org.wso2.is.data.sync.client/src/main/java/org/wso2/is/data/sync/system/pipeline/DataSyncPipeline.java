@@ -52,6 +52,7 @@ public class DataSyncPipeline {
     private DataTransformerFactory dataTransformerFactory;
     private PipelineConfiguration pipelineConfiguration;
     private boolean active = true;
+    private int i = 1;
 
     public DataSyncPipeline(DataTransformerFactory dataTransformerFactory, PipelineConfiguration
             pipelineConfiguration) {
@@ -108,12 +109,24 @@ public class DataSyncPipeline {
             }
             PipelineContext context = new PipelineContext(sourceConnection, targetConnection,
                     pipelineConfiguration);
+            context.addProperty("iteration", i);
 
             List<JournalEntry> journalEntryBatch = batchProcessor.pollJournal(context);
-            log.info("LOG PATCH: Transform journal entry.");
+
+            log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                    " ITERATION: " + i);
+
+            if (CollectionUtil.isEmpty(journalEntryBatch)) {
+
+                log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                        " ITERATION: " + i + " journal entry batch is empty.");
+            }
+
             List<JournalEntry> transformedJournalEntryBatch = dataTransformer.transform(journalEntryBatch, context);
             if (CollectionUtil.isEmpty(transformedJournalEntryBatch)) {
-                log.info("LOG PATCH: Transformed journal entry batch is empty.");
+
+                log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                        " ITERATION: " + i + " transformed journal entry batch is empty.");
             }
             List<TransactionResult> transactionResults = persistor.persist(transformedJournalEntryBatch, context);
             boolean batchProcessingSuccess = resultHandler.processResults(transactionResults, context);
@@ -137,6 +150,7 @@ public class DataSyncPipeline {
                 }
             }
             int batchSize = context.getPipelineConfiguration().getConfiguration().getBatchSize();
+            i++;
 
             if (!batchProcessingSuccess) {
                 // Processing the batch failed. Hence completing this iteration and retry in the next iteration.

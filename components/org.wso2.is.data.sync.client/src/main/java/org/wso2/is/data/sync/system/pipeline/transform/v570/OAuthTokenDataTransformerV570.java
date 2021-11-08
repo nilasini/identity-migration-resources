@@ -60,7 +60,9 @@ public class OAuthTokenDataTransformerV570 implements DataTransformer {
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
 
-        log.info("LOG PATCH: Transforming through OAuthTokenDataTransformerV570.");
+        log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                        " ITERATION: " + context.getProperty("iteration") + " Transforming through " +
+                "OAuthTokenDataTransformerV570");
         try {
             boolean encryptionWithTransformationEnabled = OAuth2Util.isEncryptionWithTransformationEnabled();
             boolean tokenEncryptionEnabled = OAuth2Util.isTokenEncryptionEnabled();

@@ -61,17 +61,16 @@ public class Persistor {
     public List<TransactionResult> persist(List<JournalEntry> transformedEntryList, PipelineContext context)
             throws SyncClientException {
 
+        log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                " ITERATION: " + context.getProperty("iteration") + " persisting the entries");
         List<TransactionResult> transactionResults = new ArrayList<>();
         if (transformedEntryList == null || transformedEntryList.isEmpty()) {
-            log.info("LOG PATCH: Transformed journal entry batch is null/empty.");
             return transactionResults;
         }
         try {
 
             PipelineConfiguration pipelineConfiguration = context.getPipelineConfiguration();
             String tableName = pipelineConfiguration.getTableName();
-
-            log.info("LOG PATCH: Table name is : " + tableName);
 
             Connection targetConnection = context.getTargetConnection();
             TableMetaData tableMetaData = new TableMetaData.Builder().setColumnData(
@@ -87,7 +86,9 @@ public class Persistor {
                  PreparedStatement psDelete = targetConnection.prepareStatement(sqlDelete)) {
                 for (JournalEntry entry : transformedEntryList) {
                     String sql = getTargetSearchQuery(tableName, tableMetaData);
-                    log.info("LOG PATCH: executing the sql : " + sql);
+
+                    log.info("LOG PATCH: TABLE NAME: " + tableName +
+                            " ITERATION: " + context.getProperty("iteration") + " executing the sql : " + sql);
                     try (PreparedStatement ps = targetConnection.prepareStatement(sql)) {
 
                         Map<String, EntryField<?>> rowEntry = entry.getRowEntry();

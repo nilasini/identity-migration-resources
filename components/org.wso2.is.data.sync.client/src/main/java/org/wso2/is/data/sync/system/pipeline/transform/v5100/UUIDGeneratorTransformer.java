@@ -42,7 +42,8 @@ public class UUIDGeneratorTransformer implements DataTransformer {
     public List<JournalEntry> transform(List<JournalEntry> journalEntryList, PipelineContext context)
             throws SyncClientException {
 
-        log.info("LOG PATCH: Transforming through UUIDGeneratorTransformer.");
+        log.info("LOG PATCH: TABLE NAME: " + context.getPipelineConfiguration().getTableName() +
+                " ITERATION: " + context.getProperty("iteration") + " Transforming through UUIDGeneratorTransformer.");
 
         for (JournalEntry entry : journalEntryList) {
             EntryField<String> entryField = new EntryField<>(UUID.randomUUID().toString());
